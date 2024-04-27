@@ -2,22 +2,19 @@
 <Pay type="Pay">
     <Payments>
         <Payment>
-            <Amount>175.01</Amount>
+            <Amount>123.45</Amount>
             <BankAccounts>
                 <BankAccount>
                     <IBAN>SK8811000000002945102347</IBAN>
                     <BIC>TATRSKBX</BIC>
                 </BankAccount>
-                <BankAccount>
-                    <IBAN>SK1211000000002945102347</IBAN>
-                </BankAccount>
             </BankAccounts>
             <PaymentDueDate>2024-06-01</PaymentDueDate>
             <CurrencyCode>EUR</CurrencyCode>
-            <BeneficiaryName>StackTrace s.r.o.</BeneficiaryName>
-            <PaymentNote>20240010</PaymentNote>
-            <VariableSymbol>20240010</VariableSymbol>
-            <BeneficiaryAddressLine1>Rastislavova 2151</BeneficiaryAddressLine1>
+            <PaymentNote>poznamka</PaymentNote>
+            <VariableSymbol>123456789</VariableSymbol>
+            <ConstantSymbol>0308</ConstantSymbol>
+            <SpecificSymbol>1111</SpecificSymbol>
             <PaymentOptions>paymentorder</PaymentOptions>
         </Payment>
     </Payments>
