@@ -1,10 +1,10 @@
 use std::io::Write;
+
 use chrono::NaiveDate;
 use crc32fast::Hasher;
 use regex::Regex;
-// use xz2::write::XzEncoder;
+use xz2::stream::{LzmaOptions, Stream};
 use xz2::write::XzEncoder;
-use xz2::stream::{Check, Filters, LzmaOptions, Stream};
 
 use crate::models::{BankAccount, Pay, Payment};
 
@@ -156,13 +156,31 @@ fn payment_to_seq(payment: &Payment) -> Vec<String> {
     seq
 }
 
-fn bytes_to_hex_string(bytes: &[u8]) -> String {
-    let hex_string: String = bytes.iter()
-        .map(|byte| format!("{:02X}", byte))
-        .collect();
-    hex_string
+// fn bytes_to_hex_string(bytes: &[u8]) -> String {
+//     let hex_string: String = bytes.iter()
+//         .map(|byte| format!("{:02X}", byte))
+//         .collect();
+//     hex_string
+// }
+
+fn base32_encode(bytes: &[u8]) -> String {
+    let mut result = String::new();
+
+    let table: [char; 32] = [
+        '0', '1', '2', '3', '4', '5', '6', '7',
+        '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+        'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+        'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
+    ];
+
+    for &byte in bytes {
+        result.push(table[byte as usize]);
+    }
+
+    result
 }
 
+// TODO: ak obsahuje hodnota \t tak musi to byť vymenene za space char
 pub fn encode(pay: &Pay) -> String {
     let mut buf: Vec<String> = Vec::new();
 
@@ -203,27 +221,41 @@ pub fn encode(pay: &Pay) -> String {
 
     let compressed = &compressor.finish().unwrap()[13..];
 
-    println!("{:?}", bytes_to_hex_string(&compressed).to_lowercase());
+    let square_type: u16 = 0;
+    let version: u16 = 0;
+    let document_type: u16 = 0;
+    let reserved: u16 = 0;
 
-    // OUT
-    // - 5d00000200ffffffffffffffff
-    // 002f8f4eefe04b128d1f0fd9cc382236ee3d498816c57392aa1137aae2bb6888ac0ed7b7e319da1a0f72552b73136af1281802c0c2bed81d1b21e43957ae34865de949cce2fd5e4a0d008df0599da8e9dc1b7380fd316bffde67e000
-    // 002f8f4eefe04b128d1f0fd9cc382236ee3d498816c57392aa1137aae2bb6888ac0ed7b7e319da1a0f72552b73136af1281802c0c2bed81d1b21e43957ae34865de949cce2fd5e4a0d008df0599da8e9dc1b7380fd316bffde67e000
+    // TODO: Check či maju byt le alebo be tieto bity
+    let header = ((square_type & 0b1111) << 12 | (version & 0b1111) << 8 | (document_type & 0b1111) << 4 | reserved & 0b1111).to_le_bytes();
 
-    // println!("{:?}", bytes_to_hex_string(&compressed).to_lowercase());
+    let mut payload: Vec<u8> = Vec::new();
+    payload.extend_from_slice(&header);
+    // TODO: Velkost paylodu pred kompresiou je potrebna?
+    payload.extend_from_slice(&((to_compress.len() & 0b11111111) as u16).to_le_bytes());
+    payload.extend_from_slice(&compressed);
 
-    // 5f3d97fe09310931093132332e34350945555209323032343036303109313233343536373839093033303809313131310909706f7a6e616d6b61093109534b383831313030303030303030323934353130323334370954415452534b4258093009305d00000200ffffffffffffffff0083fffbffffc0000000
-    // 00006200002f8f4eefe04b128d1f0fd9cc382236ee3d498816c57392aa1137aae2bb6888ac0ed7b7e319da1a0f72552b73136af1281802c0c2bed81d1b21e43957ae34865de949cce2fd5e4a0d008df0599da8e9dc1b7380fd316bffde67e000
+    let mut payload_bin: String = payload
+        .iter()
+        .map(|byte| format!("{:08b}", byte))
+        .collect::<Vec<String>>()
+        .join("");
 
-    // compressor.write_all()
+    let trailing = payload_bin.len() % 5;
+    if trailing > 0 {
+        payload_bin.push_str(&std::iter::repeat('0').take(5 - trailing).collect::<String>());
+    }
 
-    // println!("{:?}", seq.len());
+    let base_5: Vec<u8> = payload_bin
+        .chars()
+        .collect::<Vec<_>>()
+        .chunks(5)
+        .map(|chunk| {
+            let str_val: String = chunk.iter().collect();
 
-    // Header: BySquareType * Version * DocumentType * Reserved
+            u8::from_str_radix(&str_val, 2).unwrap()
+        })
+        .collect();
 
-    // Tipek
-    // \t1\t1\t123.45\tEUR\t20240601\t123456789\t0308\t1111\t\tpoznamka\t1\tSK8811000000002945102347\tTATRSKBX\t0\t0
-    // \t1\t1\t123.45\tEUR\t20240601\t123456789\t0308\t0308\t\tpoznamka\t1\tSK8811000000002945102347\tTATRSKBX\t0\t0
-
-    String::from("test")
+    base32_encode(&base_5)
 }
