@@ -9,7 +9,7 @@ use qrcode::render::unicode;
 use crate::models::Pay;
 
 fn main() {
-    let xml = fs::read_to_string("/Users/peter/code/bysqr/test.xml").unwrap();
+    let xml = fs::read_to_string("/Users/peter/code/rust/bysqr/test.xml").unwrap();
 
     let pay: Pay = quick_xml::de::from_str(&xml).unwrap();
 
