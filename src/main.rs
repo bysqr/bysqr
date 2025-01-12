@@ -6,7 +6,7 @@ mod models;
 mod encoder;
 use qrcode::QrCode;
 // use image::Luma;
-use qrcode::render::unicode;
+use qrcode::render::{svg, unicode};
 
 use crate::models::Pay;
 use clap::{Parser, Subcommand};
@@ -49,21 +49,28 @@ fn main() {
 
                     println!("{}", image);
                 } else {
-                    let image = code.render::<Luma<u8>>()
-                        .min_dimensions(160, 160)
+                    let svg_image = code.render::<svg::Color>()
+                        .min_dimensions(300, 300)
+                        .max_dimensions(300, 300)
                         .build();
 
-                    let mut buffer = Vec::new();
-                    image::codecs::png::PngEncoder::new(&mut buffer).write_image(
-                        &image,
-                        image.width(),
-                        image.height(),
-                        image::ExtendedColorType::L8,
-                    ).expect("unable to write image");
+                    println!("{}", svg_image);
 
-                    let base64_content = base64::prelude::BASE64_STANDARD.encode(&buffer);
-                    let base64_image = format!("data:image/png;base64,{}", base64_content);
-                    println!("{}", base64_image);
+                    // let image = code.render::<Luma<u8>>()
+                    //     .min_dimensions(160, 160)
+                    //     .build();
+                    //
+                    // let mut buffer = Vec::new();
+                    // image::codecs::png::PngEncoder::new(&mut buffer).write_image(
+                    //     &image,
+                    //     image.width(),
+                    //     image.height(),
+                    //     image::ExtendedColorType::L8,
+                    // ).expect("unable to write image");
+                    //
+                    // let base64_content = base64::prelude::BASE64_STANDARD.encode(&buffer);
+                    // let base64_image = format!("data:image/png;base64,{}", base64_content);
+                    // println!("{}", base64_image);
                 }
             } else {
                 panic!("no XML path defined to encode")
