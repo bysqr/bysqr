@@ -196,12 +196,15 @@ pub fn map_svg(svg: &Vec<u8>, size: u32) -> Pixmap {
     pixmap
 }
 
-pub fn to_base64_png(svg: &Vec<u8>, size: u32) -> String {
+pub fn render_png(svg: &Vec<u8>, size: u32) -> Vec<u8> {
     let pixmap = map_svg(svg, size);
 
-    let png_data = pixmap.encode_png().expect("unable to save image");
+    pixmap.encode_png().expect("unable to save image")
+}
 
-    let base64_content = base64::engine::general_purpose::STANDARD.encode(&png_data);
+pub fn to_base64_png(svg: &Vec<u8>, size: u32) -> String {
+    let buf = render_png(svg, size);
+    let base64_content = base64::engine::general_purpose::STANDARD.encode(&buf);
     format!("data:image/png;base64,{}", base64_content)
 }
 

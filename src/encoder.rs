@@ -145,13 +145,13 @@ fn payment_to_seq(payment: &Payment) -> Vec<String> {
     seq.push(String::from("0"));
 
     // Beneficiary Name = order 13
-    // seq.push(as_pattern_str(&payment.beneficiary_name, r"^.{0,140}$", "beneficiary name"));
+    seq.push(as_pattern_str(&payment.beneficiary_name, r"^.{0,140}$", "beneficiary name"));
 
     // Beneficiary Address Line 1 = order 14
-    // seq.push(as_pattern_str(&payment.beneficiary_address_line_1, r"^.{0,70}$", "beneficiary address line 1"));
+    seq.push(as_pattern_str(&payment.beneficiary_address_line_1, r"^.{0,70}$", "beneficiary address line 1"));
 
     // Beneficiary Address Line 2 = order 15
-    // seq.push(as_pattern_str(&payment.beneficiary_address_line_2, r"^.{0,70}$", "beneficiary address line 2"));
+    seq.push(as_pattern_str(&payment.beneficiary_address_line_2, r"^.{0,70}$", "beneficiary address line 2"));
 
     seq
 }
