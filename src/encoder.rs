@@ -3,8 +3,8 @@ use std::io::Write;
 use chrono::NaiveDate;
 use crc32fast::Hasher;
 use regex::Regex;
-use xz2::stream::{LzmaOptions, Stream};
-use xz2::write::XzEncoder;
+use liblzma::stream::{LzmaOptions, Stream};
+use liblzma::write::XzEncoder;
 
 use crate::models::{BankAccount, Pay, Payment};
 

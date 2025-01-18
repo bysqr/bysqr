@@ -2,17 +2,13 @@
 <Pay type="Pay">
     <Payments>
         <Payment>
-            <Amount>175.01</Amount>
+            <Amount>12.34</Amount>
             <BankAccounts>
                 <BankAccount>
                     <IBAN>SK8811000000002945102347</IBAN>
                     <BIC>TATRSKBX</BIC>
                 </BankAccount>
-                <BankAccount>
-                    <IBAN>SK1211000000002945102347</IBAN>
-                </BankAccount>
             </BankAccounts>
-            <PaymentDueDate>2024-06-01</PaymentDueDate>
             <CurrencyCode>EUR</CurrencyCode>
             <BeneficiaryName>StackTrace s.r.o.</BeneficiaryName>
             <PaymentNote>20240010</PaymentNote>
