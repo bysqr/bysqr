@@ -36,6 +36,7 @@ jobs:
 
       - name: Build
         run: |
+          rustup target add $TARGET
           mkdir -p target/dist
           cargo build --release --bin bysqr --target $TARGET
           cp target/$TARGET/release/bysqr target/dist/$DIST-full
