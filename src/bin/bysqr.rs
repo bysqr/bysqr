@@ -1,19 +1,23 @@
 use std::fs;
 use std::path::PathBuf;
 use clap::{Parser, Subcommand};
-use crate::{cli, encoder, preview, qr};
-use crate::models::Pay;
-use crate::utils::ensure_directory_for_file;
+use bysqr::{encoder, qr};
+use bysqr::models::Pay;
+#[path = "../preview.rs"]
+mod preview;
+#[path = "../utils.rs"]
+mod utils;
+use utils::ensure_directory_for_file;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None, arg_required_else_help = true)]
 struct Cli {
     #[command(subcommand)]
-    command: Option<cli::Commands>,
+    command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
-pub enum Commands {
+enum Commands {
     Encode {
         #[arg(long = "src", required = false)]
         src: Option<String>,
@@ -93,7 +97,7 @@ fn resolve_source_xml(source: &str) -> String {
     }
 }
 
-pub fn run() {
+fn main() {
     let cli = Cli::parse();
 
     match &cli.command {
