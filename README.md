@@ -16,7 +16,7 @@ You can use `bysqr` binary to encode and decode QR codes. Currently only Pay enc
 
 ### Encoding to QR code
 
-To encode `Pay` or `Invoice` to a QR code, you can run encode command with following arguments:
+To encode `Pay` or `Invoice` to a QR code, you can run `encode` command with following arguments:
 
 ```shell
 bysqr encode --src payment.xml --save ~/Desktop/qr.svg
@@ -24,7 +24,7 @@ bysqr encode --src payment.xml --save ~/Desktop/qr.svg
 bysqr encode --src '<?xml version="1.0"?><Pay type="Pay">...</Pay>' --save ~/Desktop/qr.svg
 ```
 
-Provider source (`--src`) must be a valid Pay by Square XML structure. You can either pass a path to the XML file
+Provided source (`--src`) must be a valid Pay by Square or Invoice by Square XML structure. You can either pass a path to the XML file
 or directly provide an XML content.
 
 To save generated QR code as image, use `--save` option with path where to save the image. Type of the file is
@@ -33,7 +33,7 @@ determined by the output file extension. We support generating `svg`, `png` and 
 #### QR code preview
 
 You may also preview generated code instead of saving, by passing a `--preview` option. This will open a window
-where the QR code will be displayed.
+where the QR code is displayed.
 
 ```shell
 bysqr encode --src payment.xml --preview
@@ -42,20 +42,20 @@ bysqr encode --src payment.xml --preview
 #### Output to stdout
 
 If you want to output content of the image directly to the standard output, you may use `--format` option instead of `--save`.
-This will print content of the image to the stdout. If you request an `svg` format, the XML of the SVG will be printed.
-Other formats such as `png` and `jpeg` are printed as base64 encoded images.
+This will print content of the image to the stdout in requested format. If you specify an `svg` format, the XML of the SVG will be printed out.
+Other formats such as `png` and `jpeg` are printed out as base64 encoded strings.
 
 ```shell
-bysqr encode --src payment.xml --format svg
-bysqr encode --src payment.xml --format png
-bysqr encode --src payment.xml --format jpeg
+bysqr encode --src payment.xml --format svg # output: <svg xmlns="http://www.w3.org/2000/svg">...</svg>
+bysqr encode --src payment.xml --format png # output: data:image/png;base64,...
+bysqr encode --src payment.xml --format jpeg # output: data:image/jpeg;base64,...
 ```
 
 #### Image size
 
 When you request `png` or `jpeg` format, you may use the `--size` option to control the size of the output image. The size
-option controls the width of the image. Height of the image is automatically calculated, since QR code with required logo outline
-is a rectangle. The `svg` format does not need a size, since it is a vector image and you can scale it to desired resolution on your own.
+option controls the width of the generated image. Height of the image is automatically calculated, since QR code with required logo outline
+is a rectangle. The `svg` format ignores the size setting.
 
 ```shell
 # This will create a png image with 1024px width
@@ -64,7 +64,7 @@ bysqr encode --src payment.xml --format png --size 1024
 
 #### Image quality
 
-When saving to a `jpeg` format, you may configure encoder quality using `--quality` parameter. It must be a number from **1** to **100**.
+When saving to a `jpeg` format, you may configure image encoder quality using `--quality` option. It must be a number from **1** to **100**.
 The default quality is set to **90**.
 
 ```shell
@@ -98,6 +98,23 @@ wasm-pack build --target web
 ```
 
 Built wasm module will be located in `pkg` folder.
+
+#### macOS wasm build
+
+Apple clang is not supported when building for wasm target and you have to instal `llvm` instead.
+
+```shell
+# Install llvm
+brew install llvm
+
+# Add llvm to $PATH, you may place it to .zshrc
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+
+# Verify installation
+llvm-config --version
+```
 
 ## Roadmap to v1.0
 
