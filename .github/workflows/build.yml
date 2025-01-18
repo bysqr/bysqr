@@ -40,7 +40,7 @@ jobs:
           cargo build --release --bin bysqr --target $TARGET --features preview
           cp target/$TARGET/release/bysqr target/dist/$DIST-minimal
 
-      - name: Upload
+      - name: Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
