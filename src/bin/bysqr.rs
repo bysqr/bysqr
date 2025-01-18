@@ -4,6 +4,7 @@ use clap::{Parser, Subcommand};
 use bysqr::{encoder, qr};
 use bysqr::models::{try_deserialize_pay, Pay};
 #[path = "../preview.rs"]
+#[cfg(feature = "preview")]
 mod preview;
 #[path = "../utils.rs"]
 mod utils;
@@ -115,7 +116,15 @@ fn main() {
                 let svg_code = qr::create_pay_svg(&encoded, qr::Theme::default());
 
                 if *preview {
-                    preview::show_svg(svg_code.clone());
+                    #[cfg(feature = "preview")]
+                    {
+                        preview::show_svg(svg_code.clone());
+                    }
+
+                    #[cfg(not(feature = "preview"))]
+                    {
+                        panic!("Unable to run preview. This binary wasnt compiled with preview feature");
+                    }
                 } else {
                     let output_mode = guess_output_mode(save, format).expect("unable to guess output file format");
 

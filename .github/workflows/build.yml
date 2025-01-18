@@ -36,13 +36,11 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --release --bin bysqr --target $TARGET
-
-      - name: Archive
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
           mkdir -p target/dist
-          cp target/$TARGET/release/bysqr target/dist/$DIST
+          cargo build --release --bin bysqr --target $TARGET
+          cp target/$TARGET/release/bysqr target/dist/$DIST-full
+          cargo build --release --bin bysqr --target $TARGET --features preview
+          cp target/$TARGET/release/bysqr target/dist/$DIST-minimal
 
       - name: Upload
         uses: softprops/action-gh-release@v2
@@ -50,4 +48,4 @@ jobs:
         with:
           files: target/dist/*
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}

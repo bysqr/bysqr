@@ -6,6 +6,10 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[features]
+default = []
+preview = ["eframe"]
+
 [dependencies]
 quick-xml = { version = "0.37.2", features = ["serialize"] }
 xml = "0.8.20"
@@ -18,7 +22,7 @@ qrcode = "0.14.0"
 image = { version = "0.25.1", features = ["png", "jpeg"] }
 clap = { version = "4.5.26", features = ["derive"] }
 base64 = "0.22.1"
-eframe = "0.30.0"
+eframe = { version = "0.30.0", optional = true }
 usvg = "0.44.0"
 xmltree = "0.11.0"
 resvg = "0.44.0"
