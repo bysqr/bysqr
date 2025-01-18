@@ -13,7 +13,8 @@ jobs:
       matrix:
         os: [ubuntu-latest]
 #        os: [ubuntu-latest, macos-latest]
-        arch: [x86_64, aarch64]
+#        arch: [x86_64, aarch64]
+        arch: [aarch64]
 
     steps:
       - name: Checkout
@@ -27,6 +28,7 @@ jobs:
           elif [[ "${{ matrix.os }}" == "ubuntu-latest" && "${{ matrix.arch }}" == "aarch64" ]]; then
             echo "TARGET=aarch64-unknown-linux-gnu" >> $GITHUB_ENV
             echo "DIST=bysqr-linux-aarch64" >> $GITHUB_ENV
+            sudo apt install -y gcc-aarch64-linux-gnu
           elif [[ "${{ matrix.os }}" == "macos-latest" && "${{ matrix.arch }}" == "x86_64" ]]; then
             echo "TARGET=x86_64-apple-darwin" >> $GITHUB_ENV
             echo "DIST=bysqr-darwin-x86_64" >> $GITHUB_ENV
@@ -42,7 +44,7 @@ jobs:
           cargo build --release --bin bysqr --target $TARGET
           cp target/$TARGET/release/bysqr target/dist/$DIST-full
           cargo build --release --bin bysqr --target $TARGET --features preview
-          cp target/$TARGET/release/bysqr target/dist/$DIST-minimal
+          cp target/$TARGET/release/bysqr target/dist/$DIST-headless
 
 #      - name: Release
 #        uses: softprops/action-gh-release@v2
