@@ -10,10 +10,10 @@
                 </BankAccount>
             </BankAccounts>
             <CurrencyCode>EUR</CurrencyCode>
-            <BeneficiaryName>StackTrace s.r.o.</BeneficiaryName>
-            <PaymentNote>20240010</PaymentNote>
-            <VariableSymbol>20240010</VariableSymbol>
-            <BeneficiaryAddressLine1>Rastislavova 2151</BeneficiaryAddressLine1>
+            <BeneficiaryName>Test</BeneficiaryName>
+            <PaymentNote>20202020</PaymentNote>
+            <VariableSymbol>20202020</VariableSymbol>
+            <BeneficiaryAddressLine1>Test</BeneficiaryAddressLine1>
             <PaymentOptions>paymentorder</PaymentOptions>
         </Payment>
     </Payments>

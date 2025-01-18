@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <title>wasm test</title>
+</head>
+<body>
+<div id="svg"></div>
+<script type="module">
+  import init, { encode_pay_xml_to_svg } from "./pkg/bysqr.js";
+
+  const xml = `<?xml version="1.0"?><Pay type="Pay"><Payments><Payment><Amount>12.34</Amount><BankAccounts><BankAccount><IBAN>SK8811000000002945102347</IBAN><BIC>TATRSKBX</BIC></BankAccount></BankAccounts><CurrencyCode>EUR</CurrencyCode><BeneficiaryName>Test</BeneficiaryName><PaymentNote>20202020</PaymentNote><VariableSymbol>20202020</VariableSymbol><BeneficiaryAddressLine1>Test</BeneficiaryAddressLine1><PaymentOptions>paymentorder</PaymentOptions></Payment></Payments></Pay>`;
+
+  init().then(() => {
+    const svg = encode_pay_xml_to_svg(xml)
+    document.getElementById('svg').innerHTML = svg;
+  });
+</script>
+</body>
+</html>
