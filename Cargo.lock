@@ -642,6 +642,7 @@ dependencies = [
  "resvg",
  "serde",
  "usvg",
+ "wasm-bindgen",
  "xml",
  "xmltree",
 ]
