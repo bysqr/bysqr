@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+#    tags:
+#      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+#        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
+#        arch: [x86_64, aarch64]
+        arch: [x86_64]
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      - name: Build the binary
+        run: |
+          cargo build --release 
+
+#      - name: Archive the binary
+#        run: |
+#          mkdir -p target/releases
+#          cp target/${{ matrix.os }}-${{ matrix.arch }}/release/my_binary target/releases/my_binary-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
+#          tar -czf target/releases/my_binary-${{ matrix.os }}-${{ matrix.arch }}.tar.gz target/${{ matrix.os }}-${{ matrix.arch }}/release/my_binary
+
+#      - name: Upload Release Assets
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: target/releases/*
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
