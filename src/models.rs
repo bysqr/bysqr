@@ -109,3 +109,13 @@ pub struct BankAccount {
 pub struct BankAccounts {
     pub bank_account: Vec<BankAccount>
 }
+
+pub fn try_deserialize_pay(content: &str) -> Pay {
+    if content.trim_start().starts_with("<?xml") {
+        quick_xml::de::from_str(&content).expect("unable to parse source as XML")
+    } else if content.trim_start().starts_with("{") {
+        serde_json::from_str(&content).expect("unable to parse source as JSON")
+    } else {
+        panic!("unable to deserialize source as PAY")
+    }
+}

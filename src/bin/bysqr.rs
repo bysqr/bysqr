@@ -2,7 +2,7 @@ use std::fs;
 use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 use bysqr::{encoder, qr};
-use bysqr::models::Pay;
+use bysqr::models::{try_deserialize_pay, Pay};
 #[path = "../preview.rs"]
 mod preview;
 #[path = "../utils.rs"]
@@ -92,13 +92,7 @@ fn deserialize_pay(source: &str) -> Pay {
     if fs::exists(source).unwrap() {
         let content = fs::read_to_string(&source).expect("unable to read source file");
 
-        if content.trim_start().starts_with("<?xml") {
-            quick_xml::de::from_str(&content).expect("unable to parse source as XML")
-        } else if content.trim_start().starts_with("{") {
-            serde_json::from_str(&content).expect("unable to parse source as JSON")
-        } else {
-            panic!("source file does not seems to have valid XML or JSON")
-        }
+        try_deserialize_pay(&content)
     } else if source.trim_start().starts_with("<?xml") {
         quick_xml::de::from_str(&source).expect("unable to parse source as XML")
     } else if source.trim_start().starts_with("{") {

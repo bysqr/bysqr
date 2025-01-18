@@ -156,13 +156,6 @@ fn payment_to_seq(payment: &Payment) -> Vec<String> {
     seq
 }
 
-// fn bytes_to_hex_string(bytes: &[u8]) -> String {
-//     let hex_string: String = bytes.iter()
-//         .map(|byte| format!("{:02X}", byte))
-//         .collect();
-//     hex_string
-// }
-
 fn base32_encode(bytes: &[u8]) -> String {
     let mut result = String::new();
 
@@ -194,8 +187,6 @@ pub fn encode(pay: &Pay) -> String {
 
     let seq = format!("\t{}", buf.join("\t"));
 
-    // println!("{:?}", &seq);
-
     let mut hasher = Hasher::new();
     hasher.update(seq.as_bytes());
     let crc = hasher.finalize();
@@ -209,13 +200,8 @@ pub fn encode(pay: &Pay) -> String {
     options.position_bits(2);
     options.dict_size(131072);
 
-    // let stream = Stream::new_easy_encoder(6, Check::None).unwrap();
-    // let mut filter = Filters::new();
-    // filter.lzma1(&options);
-    // let stream = Stream::new_stream_encoder(&filter, Check::None).unwrap();
     let stream = Stream::new_lzma_encoder(&options).unwrap();
 
-    // let compressed: Vec<u8> = Vec::new();
     let mut compressor = XzEncoder::new_stream(Vec::new(), stream);
     compressor.write_all(&to_compress).unwrap();
 
