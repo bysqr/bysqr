@@ -1,0 +1,18 @@
+{
+  "Payments": {
+    "Payment": [
+      {
+        "PaymentOptions": "paymentorder",
+        "Amount": 12.34,
+        "CurrencyCode": "EUR",
+        "BankAccounts": {
+          "BankAccount": [
+            {
+              "IBAN": "SK8811000000002945102347"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

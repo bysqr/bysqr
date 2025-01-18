@@ -8,6 +8,7 @@ mod preview;
 #[path = "../utils.rs"]
 mod utils;
 use utils::ensure_directory_for_file;
+use serde_json;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None, arg_required_else_help = true)]
@@ -87,13 +88,23 @@ fn guess_output_mode(destination: &Option<PathBuf>, requested_format: &Option<St
     }
 }
 
-fn resolve_source_xml(source: &str) -> String {
+fn deserialize_pay(source: &str) -> Pay {
     if fs::exists(source).unwrap() {
-        fs::read_to_string(&source).expect("unable to read XML file")
-    } else if source.starts_with("<") {
-        return String::from(source)
+        let content = fs::read_to_string(&source).expect("unable to read source file");
+
+        if content.trim_start().starts_with("<?xml") {
+            quick_xml::de::from_str(&content).expect("unable to parse source as XML")
+        } else if content.trim_start().starts_with("{") {
+            serde_json::from_str(&content).expect("unable to parse source as JSON")
+        } else {
+            panic!("source file does not seems to have valid XML or JSON")
+        }
+    } else if source.trim_start().starts_with("<?xml") {
+        quick_xml::de::from_str(&source).expect("unable to parse source as XML")
+    } else if source.trim_start().starts_with("{") {
+        serde_json::from_str(&source).expect("unable to parse source as JSON")
     } else {
-        panic!("source does not seems to be a valid file or XML content")
+        panic!("source does not seems to be a valid file or XML or JSON content")
     }
 }
 
@@ -104,8 +115,7 @@ fn main() {
         None => {}
         Some(Commands::Encode { src, preview, format, save, size, quality, overwrite }) => {
             if let Some(source) = src {
-                let xml_content = resolve_source_xml(source);
-                let pay: Pay = quick_xml::de::from_str(&xml_content).expect("unable to decode XML file");
+                let pay: Pay = deserialize_pay(&source);
                 let encoded = encoder::encode(&pay);
 
                 let svg_code = qr::create_pay_svg(&encoded, qr::Theme::default());

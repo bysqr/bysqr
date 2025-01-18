@@ -123,3 +123,5 @@ llvm-config --version
 - [ ] Invoice encoder
 - [ ] Invoice decoder
 - [ ] alternative JSON input and output structure
+- [ ] theming
+- [ ] support for different logo position
