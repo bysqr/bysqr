@@ -72,20 +72,20 @@ jobs:
       matrix:
   #      arch: [ x86_64, aarch64 ]
   #      arch: [ aarch64 ]
-#        arch: [ x86_64 ]
-        target: [x86_64-pc-windows-msvc]
+        arch: [ x86_64 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Configure
+        if: matrix.arch == 'x86_64'
         run: |
-          rustup target add $env:TARGET
+          rustup target add x86_64-pc-windows-msvc
+          echo "TARGET=x86_64-pc-windows-msvc" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "DIST=bysqr-win-x86_64.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "DIST_HEADLESS=bysqr-win-x86_64-headless.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
 #        run: |
 #          if ($env:ARCH -eq "x86_64") {
-#            rustup target add x86_64-pc-windows-msvc
-#            echo "TARGET=x86_64-pc-windows-msvc" | Out-File -FilePath $env:GITHUB_ENV -Append
-#            echo "DIST=bysqr-win-x86_64.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
-#            echo "DIST_HEADLESS=bysqr-win-x86_64-headless.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+
 #          } elseif ($env:ARCH -eq "aarch64") {
 #            rustup target add aarch64-pc-windows-msvc
 #            echo "TARGET=aarch64-pc-windows-msvc" >> $env:GITHUB_ENV
@@ -96,7 +96,7 @@ jobs:
         run: |
           mkdir -Force target\dist
           cargo build --release --bin bysqr --target $env:TARGET
-#          Copy-Item "target\$env:TARGET\release\bysqr.exe" "target\dist\$env:DIST_HEADLESS"
+          Copy-Item "target\$env:TARGET\release\bysqr.exe" "target\dist\$env:DIST_HEADLESS"
 #          cargo build --release --bin bysqr --target $env:TARGET --features preview
 #          Copy-Item "target\$env:TARGET\release\bysqr.exe" "target\dist\$env:DIST"
 
