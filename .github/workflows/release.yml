@@ -6,73 +6,73 @@ on:
       - 'v*'
 
 jobs:
-#  build-linux:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        arch: [ x86_64, aarch64 ]
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#      - name: Configure
-#        run: |
-#          if [[ "${{ matrix.arch }}" == "x86_64" ]]; then
-#            sudo apt-get install -y build-essential
-#            rustup target add x86_64-unknown-linux-gnu
-#            echo "TARGET=x86_64-unknown-linux-gnu" >> $GITHUB_ENV
-#            echo "DIST=bysqr-linux-x86_64" >> $GITHUB_ENV
-#            echo "DIST_HEADLESS=bysqr-linux-x86_64-headless" >> $GITHUB_ENV
-#          elif [[ "${{ matrix.arch }}" == "aarch64" ]]; then
-#            sudo apt-get install -y build-essential gcc-aarch64-linux-gnu libc6-dev-arm64-cross
-#            rustup target add aarch64-unknown-linux-gnu
-#            echo "TARGET=aarch64-unknown-linux-gnu" >> $GITHUB_ENV
-#            echo "DIST=bysqr-linux-aarch64" >> $GITHUB_ENV
-#            echo "DIST_HEADLESS=bysqr-linux-aarch64-headless" >> $GITHUB_ENV
-#          fi
-#      - name: Build
-#        run: |
-#          mkdir -p target/dist
-#          cargo build --release --bin bysqrcli --target $TARGET
-#          cp target/$TARGET/release/bysqrcli target/dist/$DIST_HEADLESS
-#          cargo build --release --bin bysqrcli --target $TARGET --features preview
-#          cp target/$TARGET/release/bysqrcli target/dist/$DIST
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ x86_64, aarch64 ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure
+        if: matrix.arch == 'x86_64'
+        run: |
+          sudo apt-get install -y build-essential
+          rustup target add x86_64-unknown-linux-gnu
+          echo "TARGET=x86_64-unknown-linux-gnu" >> $GITHUB_ENV
+          echo "DIST=bysqr-linux-x86_64" >> $GITHUB_ENV
+          echo "DIST_HEADLESS=bysqr-linux-x86_64-headless" >> $GITHUB_ENV
+      - name: Configure
+        if: matrix.arch == 'aarch64'
+        run: |
+          sudo apt-get install -y build-essential gcc-aarch64-linux-gnu libc6-dev-arm64-cross
+          rustup target add aarch64-unknown-linux-gnu
+          echo "TARGET=aarch64-unknown-linux-gnu" >> $GITHUB_ENV
+          echo "DIST=bysqr-linux-aarch64" >> $GITHUB_ENV
+          echo "DIST_HEADLESS=bysqr-linux-aarch64-headless" >> $GITHUB_ENV
+      - name: Build
+        run: |
+          mkdir -p target/dist
+          cargo build --release --bin bysqrcli --target $TARGET
+          cp target/$TARGET/release/bysqrcli target/dist/$DIST_HEADLESS
+          cargo build --release --bin bysqrcli --target $TARGET --features preview
+          cp target/$TARGET/release/bysqrcli target/dist/$DIST
 
-#  build-darwin:
-#    runs-on: macos-latest
-#    strategy:
-#      matrix:
-#        arch: [x86_64, aarch64]
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#      - name: Configure
-#        run: |
-#          if [[ "${{ matrix.arch }}" == "x86_64" ]]; then
-#            rustup target add x86_64-apple-darwin
-#            echo "TARGET=x86_64-apple-darwin" >> $GITHUB_ENV
-#            echo "DIST=bysqr-darwin-x86_64" >> $GITHUB_ENV
-#            echo "DIST_HEADLESS=bysqr-darwin-x86_64-headless" >> $GITHUB_ENV
-#          elif [[ "${{ matrix.arch }}" == "aarch64" ]]; then
-#            rustup target add aarch64-apple-darwin
-#            echo "TARGET=aarch64-apple-darwin" >> $GITHUB_ENV
-#            echo "DIST=bysqr-darwin-aarch64" >> $GITHUB_ENV
-#            echo "DIST_HEADLESS=bysqr-darwin-aarch64-headless" >> $GITHUB_ENV
-#          fi
-#      - name: Build
-#        run: |
-#          mkdir -p target/dist
-#          cargo build --release --bin bysqrcli --target $TARGET
-#          cp target/$TARGET/release/bysqrcli target/dist/$DIST_HEADLESS
-#          cargo build --release --bin bysqrcli --target $TARGET --features preview
-#          cp target/$TARGET/release/bysqrcli target/dist/$DIST
+  build-darwin:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure
+        if: matrix.arch == 'x86_64'
+        run: |
+          rustup target add x86_64-apple-darwin
+          echo "TARGET=x86_64-apple-darwin" >> $GITHUB_ENV
+          echo "DIST=bysqr-darwin-x86_64" >> $GITHUB_ENV
+          echo "DIST_HEADLESS=bysqr-darwin-x86_64-headless" >> $GITHUB_ENV
+      - name: Configure
+        if: matrix.arch == 'aarch64'
+        run: |
+          rustup target add aarch64-apple-darwin
+          echo "TARGET=aarch64-apple-darwin" >> $GITHUB_ENV
+          echo "DIST=bysqr-darwin-aarch64" >> $GITHUB_ENV
+          echo "DIST_HEADLESS=bysqr-darwin-aarch64-headless" >> $GITHUB_ENV
+      - name: Build
+        run: |
+          mkdir -p target/dist
+          cargo build --release --bin bysqrcli --target $TARGET
+          cp target/$TARGET/release/bysqrcli target/dist/$DIST_HEADLESS
+          cargo build --release --bin bysqrcli --target $TARGET --features preview
+          cp target/$TARGET/release/bysqrcli target/dist/$DIST
 
   build-windows:
     runs-on: windows-latest
     strategy:
       matrix:
-  #      arch: [ x86_64, aarch64 ]
-        arch: [ aarch64 ]
-#        arch: [ x86_64 ]
+        arch: [ x86_64, aarch64 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -103,54 +103,3 @@ jobs:
           files: target/dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-
-#  build:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        os: [ubuntu-latest]
-##        os: [ubuntu-latest, macos-latest]
-##        arch: [x86_64, aarch64]
-#        arch: [aarch64]
-##        arch: [x86_64]
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#      - name: Configure
-#        run: |
-#          if [[ "${{ matrix.os }}" == "ubuntu-latest" && "${{ matrix.arch }}" == "x86_64" ]]; then
-#            sudo apt-get install -y build-essential
-#            rustup target add x86_64-unknown-linux-gnu
-#            echo "TARGET=x86_64-unknown-linux-gnu" >> $GITHUB_ENV
-#            echo "DIST=bysqr-linux-x86_64" >> $GITHUB_ENV
-#            echo "DIST_HEADLESS=bysqr-linux-x86_64-headless" >> $GITHUB_ENV
-#          elif [[ "${{ matrix.os }}" == "ubuntu-latest" && "${{ matrix.arch }}" == "aarch64" ]]; then
-#            sudo apt-get install -y build-essential gcc-aarch64-linux-gnu libc6-dev-arm64-cross
-#            rustup target add aarch64-unknown-linux-gnu
-#            echo "TARGET=aarch64-unknown-linux-gnu" >> $GITHUB_ENV
-#            echo "DIST=bysqr-linux-aarch64" >> $GITHUB_ENV
-#            echo "DIST_HEADLESS=bysqr-linux-aarch64-headless" >> $GITHUB_ENV
-#          elif [[ "${{ matrix.os }}" == "macos-latest" && "${{ matrix.arch }}" == "x86_64" ]]; then
-#            rustup target add x86_64-apple-darwin
-#            echo "TARGET=x86_64-apple-darwin" >> $GITHUB_ENV
-#            echo "DIST=bysqr-darwin-x86_64" >> $GITHUB_ENV
-#            echo "DIST_HEADLESS=bysqr-darwin-x86_64-headless" >> $GITHUB_ENV
-#          elif [[ "${{ matrix.os }}" == "macos-latest" && "${{ matrix.arch }}" == "aarch64" ]]; then
-#            rustup target add aarch64-apple-darwin
-#            echo "TARGET=aarch64-apple-darwin" >> $GITHUB_ENV
-#            echo "DIST=bysqr-darwin-aarch64" >> $GITHUB_ENV
-#            echo "DIST_HEADLESS=bysqr-darwin-aarch64-headless" >> $GITHUB_ENV
-#          fi
-#      - name: Build
-#        run: |
-#          mkdir -p target/dist
-#          cargo build --release --bin bysqr --target $TARGET
-#          cp target/$TARGET/release/bysqr target/dist/$DIST_HEADLESS
-#          cargo build --release --bin bysqr --target $TARGET --features preview
-#          cp target/$TARGET/release/bysqr target/dist/$DIST
-#      - name: Release
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          files: target/dist/*
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
