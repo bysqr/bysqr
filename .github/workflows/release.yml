@@ -84,15 +84,15 @@ jobs:
             echo "DIST=bysqr-win-x86_64.exe" >> $env:GITHUB_ENV
             echo "DIST_HEADLESS=bysqr-win-x86_64-headless.exe" >> $env:GITHUB_ENV
           } elseif ($env:ARCH -eq "aarch64") {
-            sudo apt-get install -y build-essential gcc-aarch64-linux-gnu libc6-dev-arm64-cross
-            rustup target add aarch64-unknown-linux-gnu
-            echo "TARGET=aarch64-unknown-linux-gnu" >> $env:GITHUB_ENV
-            echo "DIST=bysqr-linux-aarch64.exe" >> $env:GITHUB_ENV
-            echo "DIST_HEADLESS=bysqr-linux-aarch64-headless.exe" >> $env:GITHUB_ENV
+            rustup target add aarch64-pc-windows-msvc
+            echo "TARGET=aarch64-pc-windows-msvc" >> $env:GITHUB_ENV
+            echo "DIST=bysqr-win-aarch64.exe" >> $env:GITHUB_ENV
+            echo "DIST_HEADLESS=bysqr-win-aarch64-headless.exe" >> $env:GITHUB_ENV
           }
       - name: Build
         run: |
           mkdir -Force target\dist
+          Write-Host "Building for target: $env:TARGET"
           cargo build --release --bin bysqr --target $env:TARGET
           Copy-Item "target\$env:TARGET\release\bysqr.exe" "target\dist\$env:DIST_HEADLESS"
           cargo build --release --bin bysqr --target $env:TARGET --features preview
