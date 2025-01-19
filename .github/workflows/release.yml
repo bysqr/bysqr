@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-#    tags:
-#      - 'v*'
+    tags:
+      - 'v*'
 
 jobs:
 #  build-linux:
@@ -97,6 +97,12 @@ jobs:
           Copy-Item "target\$env:TARGET\release\bysqrcli.exe" "target\dist\$env:DIST_HEADLESS"
           cargo build --release --bin bysqrcli --target $env:TARGET --features preview
           Copy-Item "target\$env:TARGET\release\bysqrcli.exe" "target\dist\$env:DIST"
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: target/dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
 #  build:
 #    runs-on: ubuntu-latest
