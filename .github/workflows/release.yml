@@ -72,31 +72,33 @@ jobs:
       matrix:
   #      arch: [ x86_64, aarch64 ]
   #      arch: [ aarch64 ]
-        arch: [ x86_64 ]
+#        arch: [ x86_64 ]
+        target: [x86_64-pc-windows-msvc]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Configure
         run: |
-          if ($env:ARCH -eq "x86_64") {
-            rustup target add x86_64-pc-windows-msvc
-            echo "TARGET=x86_64-pc-windows-msvc" | Out-File -FilePath $env:GITHUB_ENV -Append
-            echo "DIST=bysqr-win-x86_64.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
-            echo "DIST_HEADLESS=bysqr-win-x86_64-headless.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
-          } elseif ($env:ARCH -eq "aarch64") {
-            rustup target add aarch64-pc-windows-msvc
-            echo "TARGET=aarch64-pc-windows-msvc" >> $env:GITHUB_ENV
-            echo "DIST=bysqr-win-aarch64.exe" >> $env:GITHUB_ENV
-            echo "DIST_HEADLESS=bysqr-win-aarch64-headless.exe" >> $env:GITHUB_ENV
-          }
+          rustup target add $env:TARGET
+#        run: |
+#          if ($env:ARCH -eq "x86_64") {
+#            rustup target add x86_64-pc-windows-msvc
+#            echo "TARGET=x86_64-pc-windows-msvc" | Out-File -FilePath $env:GITHUB_ENV -Append
+#            echo "DIST=bysqr-win-x86_64.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+#            echo "DIST_HEADLESS=bysqr-win-x86_64-headless.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+#          } elseif ($env:ARCH -eq "aarch64") {
+#            rustup target add aarch64-pc-windows-msvc
+#            echo "TARGET=aarch64-pc-windows-msvc" >> $env:GITHUB_ENV
+#            echo "DIST=bysqr-win-aarch64.exe" >> $env:GITHUB_ENV
+#            echo "DIST_HEADLESS=bysqr-win-aarch64-headless.exe" >> $env:GITHUB_ENV
+#          }
       - name: Build
         run: |
           mkdir -Force target\dist
-          Write-Host "Building for target: ${{ env.TARGET }}"
-          cargo build --release --bin bysqr --target ${{ env.TARGET }}
-          Copy-Item "target\$env:TARGET\release\bysqr.exe" "target\dist\$env:DIST_HEADLESS"
-          cargo build --release --bin bysqr --target $env:TARGET --features preview
-          Copy-Item "target\$env:TARGET\release\bysqr.exe" "target\dist\$env:DIST"
+          cargo build --release --bin bysqr --target $env:TARGET
+#          Copy-Item "target\$env:TARGET\release\bysqr.exe" "target\dist\$env:DIST_HEADLESS"
+#          cargo build --release --bin bysqr --target $env:TARGET --features preview
+#          Copy-Item "target\$env:TARGET\release\bysqr.exe" "target\dist\$env:DIST"
 
 #  build:
 #    runs-on: ubuntu-latest
