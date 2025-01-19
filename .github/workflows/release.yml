@@ -92,8 +92,8 @@ jobs:
       - name: Build
         run: |
           mkdir -Force target\dist
-          Write-Host "Building for target: $env:TARGET"
-          cargo build --release --bin bysqr --target $env:TARGET
+          Write-Host "Building for target: ${{ env.TARGET }}"
+          cargo build --release --bin bysqr --target ${{ env.TARGET }}
           Copy-Item "target\$env:TARGET\release\bysqr.exe" "target\dist\$env:DIST_HEADLESS"
           cargo build --release --bin bysqr --target $env:TARGET --features preview
           Copy-Item "target\$env:TARGET\release\bysqr.exe" "target\dist\$env:DIST"
