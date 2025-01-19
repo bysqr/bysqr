@@ -80,9 +80,9 @@ jobs:
         run: |
           if ($env:ARCH -eq "x86_64") {
             rustup target add x86_64-pc-windows-msvc
-            echo "TARGET=x86_64-pc-windows-msvc" >> $env:GITHUB_ENV
-            echo "DIST=bysqr-win-x86_64.exe" >> $env:GITHUB_ENV
-            echo "DIST_HEADLESS=bysqr-win-x86_64-headless.exe" >> $env:GITHUB_ENV
+            echo "TARGET=x86_64-pc-windows-msvc" | Out-File -FilePath $env:GITHUB_ENV -Append
+            echo "DIST=bysqr-win-x86_64.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+            echo "DIST_HEADLESS=bysqr-win-x86_64-headless.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
           } elseif ($env:ARCH -eq "aarch64") {
             rustup target add aarch64-pc-windows-msvc
             echo "TARGET=aarch64-pc-windows-msvc" >> $env:GITHUB_ENV
