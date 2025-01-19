@@ -5,10 +5,21 @@ Open source Pay by Square encoder written in Rust.
 ## Notice
 
 Work on the project is still in progress. It is not suitable for a production run, until version 1.0, since not
-all features are implemented. It is likely that there will be breaking changes in the future before settling on some stable API.
+all features are implemented. Current version is very rough proof of concept. 
+It is very likely there will be breaking changes until 1.0, before settling on some stable API.
 
 The goal of the project is to provide full encoder and decoder implementation for Pay by Square and Invoice by Square,
 without any external dependencies and to be as much portable as possible, to allow compilation for various targets.
+
+## Installation
+
+You can download `bysqr` cli application from [Releases](https://github.com/bysqr/bysqr/releases) page.
+There are precompiled binaries for macOS, Linux and Windows, for x86 and ARM architectures. 
+You can find there also a wasm build if you are interested.
+
+All binaries are compiled in two versions - the full version and headless version. The headless version does not have
+GUI and is ment to be run only from command line or shipped with your application. Hence, the headless version does not have
+any GUI related features, such as QR code preview. It's size is however much smaller than the full version.
 
 ## Usage
 
@@ -38,6 +49,8 @@ where the QR code is displayed.
 ```shell
 bysqr encode --src payment.xml --preview
 ```
+
+This feature is not available in headless version.
 
 #### Output to stdout
 
@@ -79,7 +92,7 @@ To build a project, ensure you have latest [Rust](https://www.rust-lang.org/tool
 cargo build --release
 ```
 
-You can find `bysqr` executable and rust library in `target/release`.
+You can find `bysqrcli` executable and rust library in `target/release`.
 
 ### WASM build
 
@@ -99,7 +112,15 @@ wasm-pack build --target web
 
 Built wasm module will be located in `pkg` folder.
 
-#### macOS wasm build
+#### Building for wasm on Ubuntu
+
+Before building wasm on Ubuntu, make sure to install all necessary tools:
+
+```shell
+sudo apt install -y build-essential clang
+```
+
+#### Building for wasm on macOS
 
 Apple clang is not supported when building for wasm target and you have to instal `llvm` instead.
 
@@ -125,3 +146,5 @@ llvm-config --version
 - [ ] alternative JSON input and output structure
 - [ ] theming
 - [ ] support for different logo position
+- [ ] general code refactoring
+- [ ] tests
