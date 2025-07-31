@@ -54,7 +54,7 @@ jobs:
       - name: Configure
         if: matrix.arch == 'x86_64'
         run: |
-          sudo apt-get install -y build-essential
+          sudo apt-get install -y build-essential musl-tools
           rustup target add x86_64-unknown-linux-musl
           echo "TARGET=x86_64-unknown-linux-musl" >> $GITHUB_ENV
           echo "DIST=bysqr-linux-x86_64" >> $GITHUB_ENV
