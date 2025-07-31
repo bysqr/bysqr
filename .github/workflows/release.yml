@@ -62,7 +62,7 @@ jobs:
       - name: Configure
         if: matrix.arch == 'aarch64'
         run: |
-          sudo apt-get install -y build-essential gcc-aarch64-linux-musl libc6-dev-arm64-cross
+          sudo apt-get install -y build-essential libc6-dev-arm64-cross
           rustup target add aarch64-unknown-linux-musl
           echo "TARGET=aarch64-unknown-linux-musl" >> $GITHUB_ENV
           echo "DIST=bysqr-linux-aarch64" >> $GITHUB_ENV
